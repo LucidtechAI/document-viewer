@@ -1,4 +1,5 @@
 import { forwardRef, ReactNode, useEffect, useImperativeHandle, useState, useRef } from 'react';
+import { FiDownload, FiRotateCcw, FiRotateCw, FiZoomIn, FiZoomOut} from 'react-icons/fi'
 
 import PDFViewer from './PDFViewer';
 import SimpleImageViewer from './SimpleImageViewer';
@@ -25,21 +26,8 @@ export function debounce(fn: (args: any) => void, ms: number): () => void {
 }
 
 export function getZoomStyle(zoom: ZoomState): string {
-  let zoomStyle = '';
-
-  switch (zoom) {
-    case 2:
-      zoomStyle = styles['zoom-200'];
-      break;
-    case 1.5:
-      zoomStyle = styles['zoom-150'];
-      break;
-    case 1:
-    default:
-      break;
-  }
-
-  return zoomStyle;
+  const zoomStyleKey = styles[`zoom-${zoom*100}`];
+  return zoomStyleKey;
 }
 
 export function getRotationStyle(rotation: Rotation): string {
@@ -84,7 +72,8 @@ export type DocumentViewerProps = {
   url?: string;
 };
 
-export type ZoomState = 1 | 1.5 | 2;
+const ZOOM_OPTIONS = [0.25, 0.5, 0.75, 1, 1.5, 2] as const;
+export type ZoomState = typeof ZOOM_OPTIONS[number];
 export type Rotation = 0 | 90 | 180 | 270;
 
 /**
@@ -133,30 +122,21 @@ const DocumentViewer = forwardRef<ImperativeRef, DocumentViewerProps>(
     }, [doc]);
 
     const onZoomIn = (): void => {
-      switch (zoom) {
-        case 1:
-          setZoom(1.5);
-          break;
-        case 1.5:
-          setZoom(2);
-          break;
-        case 2:
-        default:
-          break;
+      const currentZoomIndex = ZOOM_OPTIONS.findIndex(option => option === zoom)
+      if (currentZoomIndex >= ZOOM_OPTIONS.length - 1) {
+        return;
+      } else {
+        setZoom(ZOOM_OPTIONS[currentZoomIndex+1])
       }
     };
 
     const onZoomOut = (): void => {
-      switch (zoom) {
-        case 2:
-          setZoom(1.5);
-          break;
-        case 1.5:
-          setZoom(1);
-          break;
-        case 1:
-        default:
-          break;
+      const currentZoomIndex = ZOOM_OPTIONS.findIndex(option => option === zoom)
+      if (currentZoomIndex <= 0) {
+        return;
+      } 
+      else {
+        setZoom(ZOOM_OPTIONS[currentZoomIndex-1])
       }
     };
 
@@ -235,30 +215,33 @@ const DocumentViewer = forwardRef<ImperativeRef, DocumentViewerProps>(
       onRotateCCW,
     }));
 
+    const firstZoomOption = ZOOM_OPTIONS[0];
+    const lastZoomOption = ZOOM_OPTIONS[ZOOM_OPTIONS.length - 1]
+
     return (
       <div className={containerClasses}>
         <div className={styles.toolbar}>
           <div className={styles.mainGroup}>
             <div className={styles['toolbar-group']}>
-              <span className={`${styles.button} ${zoom === 1 ? styles.disabled : ''}`} onClick={onZoomOut}>
-                {/* <FiZoomOut title="Zoom out" /> */}
+              <span className={`${styles.button} ${zoom === firstZoomOption ? styles.disabled : ''}`} onClick={onZoomOut}>
+                <FiZoomOut title="Zoom out" />
               </span>
               <span className={styles.info}>{Math.floor(zoom * 100)}%</span>
-              <span className={`${styles.button} ${zoom === 2 ? styles.disabled : ''}`} onClick={onZoomIn}>
-                {/* <FiZoomIn title="Zoom in" /> */}
+              <span className={`${styles.button} ${zoom === lastZoomOption ? styles.disabled : ''}`} onClick={onZoomIn}>
+                <FiZoomIn title="Zoom in" />
               </span>
             </div>
             <div className={styles['toolbar-group']}>
               <span className={styles.button} onClick={onRotateCCW}>
-                {/* <FiRotateCcw title="Rotate counter clockwise" /> */}
+                <FiRotateCcw title="Rotate counter clockwise" />
               </span>
               <span className={styles.button} onClick={onRotateCW}>
-                {/* <FiRotateCw title="Rotate clockwise" /> */}
+                <FiRotateCw title="Rotate clockwise" />
               </span>
             </div>
             <div className={styles['toolbar-group']}>
               <span className={styles.button} onClick={downloadDocument}>
-                {/* <FiDownload title="Download document" /> */}
+                <FiDownload title="Download document" />
               </span>
             </div>
           </div>

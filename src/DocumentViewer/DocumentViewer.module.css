@@ -88,6 +88,21 @@
   overflow: auto;
 }
 
+.zoom-25 {
+  transform-origin: top center;
+  transform: scale(0.25);
+}
+
+.zoom-50 {
+  transform-origin: top center;
+  transform: scale(0.5);
+}
+
+.zoom-75 {
+  transform-origin: top center;
+  transform: scale(0.75);
+}
+
 .zoom-150 {
   transform-origin: top left;
   transform: scale(1.5);
