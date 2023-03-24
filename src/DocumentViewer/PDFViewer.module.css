@@ -1,0 +1,28 @@
+.page canvas {
+  box-shadow: 2px 2px 6px 0px rgba(0,0,0,0.6);
+}
+
+.page:not(:last-child) {
+  margin-bottom: 20px;
+}
+
+/* override react-pdf's weird offsets */
+.page :global(.react-pdf__Page__textContent) {
+  top: 0 !important;
+  left: 0 !important;
+  transform: unset !important;
+}
+
+.page.rotate90 :global(.react-pdf__Page__textContent) {
+}
+
+.page.rotate180 :global(.react-pdf__Page__textContent) {
+  transform: rotate(180deg) !important;
+}
+
+.page.rotate270 :global(.react-pdf__Page__textContent) {
+}
+
+.document {
+  min-width: 100%;
+}

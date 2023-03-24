@@ -1,0 +1,16 @@
+.page {
+  box-shadow: 2px 2px 6px 0px rgba(0,0,0,0.6);
+  max-width: 100%;
+}
+
+.page canvas {
+  max-width: 100%;
+}
+
+.page:not(:last-child) {
+  margin-bottom: 20px;
+}
+
+.document {
+  min-width: 100%;
+}
